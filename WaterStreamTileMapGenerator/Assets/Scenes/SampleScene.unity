@@ -409,6 +409,7 @@ MonoBehaviour:
   tileAmount: 100
   flowerProbability: 0.01
   gen: 0
+  celluralAutomataGen: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
