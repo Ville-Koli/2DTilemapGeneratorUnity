@@ -19,7 +19,6 @@ public class CreateGrid : MonoBehaviour
     public int tileAmount = 300;
     public float flowerProbability = 0.1f;
     public bool gen = false;
-    public int celluralAutomataGen = 10;
 
     /**
     <summary> Function, which returns a random tile on the left side of the boundary </summary>
@@ -171,7 +170,7 @@ public class CreateGrid : MonoBehaviour
     <summary> Function which details the map by making tiles to their darker version depending on the surrounding amount of same tiles.
     Function also replaces dark grass into flowers depending on flower probability </summary>
     **/
-    void DetailTheMap(bool addFlowers){
+    public void DetailTheMap(bool addFlowers){
         initTilemap.Start();
         Tilemap tilemap = initTilemap.GetTilemap();
         tiles = initTilemap.GetTileDict();
@@ -213,163 +212,17 @@ public class CreateGrid : MonoBehaviour
         }
     }
 
-    int CountNeighbours(int[] map, int i, int width, int height){
-        int[] surroundNodes = new int[]{
-        1, 0,
-        -1, 0, 
-        0, 1, 
-        0, -1, 
-        1, 1, 
-       -1, 1, 
-       1, -1, 
-       -1, -1};
-        int x = i % width;
-        int y = i / height;
-        int neighbours = 0;
-        for(int j = 1; j < surroundNodes.Length; j += 2){
-            int loc = (y + surroundNodes[j - 1])*height + x + surroundNodes[j];
-            if(0 <= loc && loc < map.Length){
-                if(map[loc] == 0){
-                    neighbours += 1;
-                }
-            }else{
-                neighbours += 1;
-            }
-                
-        }
-        return neighbours;
-    }
-
-
-    int[] GenerateAHeightMap(int generations){
-        int width = Math.Abs(bounds.xMax - bounds.x);
-        int height = Math.Abs(bounds.yMax - bounds.y);
-        int[] heightMap = new int[width*height];
-        float density = 60;
-        for(int i = 0; i < heightMap.Length; ++i){
-            if(UnityEngine.Random.Range(1, 101) > density){
-                heightMap[i] = 1;
-            }else{
-                heightMap[i] = 0;
-            }
-                
-        }
-        for(int generation = 0; generation < generations; ++generation){
-            int[] tempMap = new int[width*height];
-            for(int i = 0; i < heightMap.Length; ++i){
-                tempMap[i] = heightMap[i];
-            }
-            for(int i = 0; i < heightMap.Length; ++i){
-                int info = CountNeighbours(tempMap, i, width, height);
-                if(info > 4){
-                    heightMap[i] = 0;
-                }else{
-                    heightMap[i] = 1;
-                }
-            }
-        }
-        return heightMap;
-    }
-
-    void GenerateMapBasedOnRandomHeightMap(){
-        int[] map = GenerateAHeightMap(celluralAutomataGen);
-        initTilemap.Start();
-        Tilemap tilemap = initTilemap.GetTilemap();
-        tiles = initTilemap.GetTileDict();
-        int width = Math.Abs(bounds.xMax - bounds.x);
-        int height = Math.Abs(bounds.yMax - bounds.y);
-        // turn tiles into darker versions
-        for(int i = 0; i < map.Length; ++i){
-            int x = i % width;
-            int y = i / height;
-            if(map[i] == 0){
-                tilemap.SetTile(new Vector3Int(x, y), tiles["water_0"]);
-            }else if(map[i] == 1){
-                tilemap.SetTile(new Vector3Int(x, y), tiles["grass_0"]);
-            }
-        }
-        //AddLayerOnDarkGrass(map, width, height, "water_0", 1, 0.0001f, "water_0", true);
-        float waterRatio = 0;
-        float grassRatio = 0;
-        for(int i = 0; i < map.Length; ++i){
-            int x = i % width;
-            int y = i / height;
-            TileBase tile = tilemap.GetTile(new Vector3Int(x, y));
-            if(tile != null && tile.name == "water_0"){
-                waterRatio += 1;
-            }else if(tile != null && tile.name == "grass_0"){
-                grassRatio += 1;
-            }
-        }
-        Debug.Log("W: " + waterRatio/map.Length + " G: " + grassRatio/map.Length);
-        // generate dark grass areas
-        DetailTheMap(false);
-        // add mountains
-        AddLayerOnTile(map, width, height, "mountain_0", 20, 0.001f, false, false, "dark_grass_0");
-        AddLayerOnTile(map, width, height, "forest_tile_0", 20, 0.001f, false, false, "dark_grass_0");
-        AddLayerOnTile(map, width, height, "grass_0", 20, 0.001f, false, false, "dark_grass_0");
-        // generate dark mountains
-        DetailTheMap(false);
-        // add snow layers to mountains
-        DetailTheMap(false);
-        DetailTheMap(true);
-        AddLayerOnTile(map, width, height, "grass_0", 3, 0.0001f, false, false, "dark_grass_0");
-    }
-
-    void AddLayerOnTile(int[] map, int width, int height, string tileName, int iterations, float percentage, bool applyOnAll = false, bool rememberTiles = false, params string[] applyOnTiles){
-        Tilemap tilemap = initTilemap.GetTilemap();
-        tiles = initTilemap.GetTileDict();
-        List<(int x, int y)> coords = new List<(int x, int y)>();
-        // turn tiles into darker versions
-        for(int i = 0; i < map.Length; ++i){
-            int x = i % width;
-            int y = i / height;
-            Vector3Int loc = new Vector3Int(x, y);
-            TileBase tile = tilemap.GetTile(loc);
-            foreach(var applyTile in applyOnTiles){
-                if(tile != null && tile.name == applyTile && UnityEngine.Random.Range(0f, 1f) <= percentage){
-                    tilemap.SetTile(loc, tiles[tileName]);
-                    coords.Add((loc.x, loc.y));
-                }
-            }
-        }
-        for(int j = 0; j < iterations; ++j){
-            for(int i = 0; i < map.Length; ++i){
-                int x, y;
-                Vector3Int loc;
-                if(!rememberTiles){
-                    x = i % width;
-                    y = i / height;
-                }else{
-                    x = coords[i % coords.Count].x;
-                    y = coords[i % coords.Count].y;
-                }
-                loc = new Vector3Int(x, y);
-                TileBase tile = tilemap.GetTile(loc);
-                if(tile != null && tile.name == tileName){
-                    Vector3Int newLoc = loc + new Vector3Int(UnityEngine.Random.Range(-1, 2), UnityEngine.Random.Range(-1, 2));
-                    TileBase secondTile = tilemap.GetTile(newLoc);
-                    foreach(var applyTile in applyOnTiles){
-                        if(secondTile != null && (secondTile.name == applyTile || applyOnAll)){
-                            tilemap.SetTile(newLoc, tiles[tileName]);
-                            coords.Add((newLoc.x, newLoc.y));
-                        }
-                    }
-                }
-            }
-            }
-    }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        GenerateMapBasedOnRandomHeightMap();
     }
 
     // Update is called once per frame
     void Update()
     {
         if(gen){
-            GenerateMapBasedOnRandomHeightMap();
+            GenerateBaseMap();
+            DetailTheMap(true);
             gen = false;
         }
     }
