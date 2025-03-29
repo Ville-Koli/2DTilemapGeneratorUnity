@@ -80215,9 +80215,6 @@ GameObject:
   - component: {fileID: 1389138880}
   - component: {fileID: 1389138878}
   - component: {fileID: 1389138879}
-  - component: {fileID: 1389138881}
-  - component: {fileID: 1389138882}
-  - component: {fileID: 1389138883}
   m_Layer: 0
   m_Name: createWATAAAH
   m_TagString: Untagged
@@ -80307,85 +80304,6 @@ MonoBehaviour:
     m_Position: {x: 0, y: 0, z: 0}
     m_Size: {x: 100, y: 100, z: 0}
   populationSize: 100
---- !u!114 &1389138881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389138875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: faf4d2d391286444da883e2165ae0ae0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testmap: {fileID: 1581685019}
-  settings: {fileID: 1389138880}
-  initTilemap: {fileID: 1389138876}
-  hca: {fileID: 1389138883}
-  indexList: []
-  genMax: 30
-  celluralAutomataGen: 10
-  tryAgain: 0
-  stop: 1
---- !u!114 &1389138882
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389138875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cadd244de85568549b1ee2c81933cc5c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testmap: {fileID: 1581685019}
-  settings: {fileID: 1389138880}
-  initTilemap: {fileID: 1389138876}
-  generateTiles: 10
-  tryAgain: 0
-  width: 100
-  height: 100
-  showApproximationOfTest: 1
-  start: 0
---- !u!114 &1389138883
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1389138875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4b2636d77c9a09499f946f15fe8d534, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  testmap: {fileID: 1581685019}
-  settings: {fileID: 1389138880}
-  initTilemap: {fileID: 1389138876}
-  gaca: {fileID: 1389138881}
-  genMax: 30000
-  indexList: []
-  celluralAutomataGen: 10
-  tryAgain: 0
-  retrain: 0
-  stop: 0
-  playAnimation: 0
-  animationLength: 100
-  timeStep: 0.3
-  wanted_ratios:
-  - 5200
-  - 2900
-  - 0
-  - 0
-  - 1500
-  - 0
-  - 0
-  - 2000
-  - 0
-  - 0
-  - 1450
 --- !u!1 &1448535117
 GameObject:
   m_ObjectHideFlags: 0
